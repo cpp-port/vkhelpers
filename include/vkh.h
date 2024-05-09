@@ -188,7 +188,7 @@ bool vkh_phyinfo_create_queues  (VkhPhyInfo phy, int qFam, uint32_t queueCount, 
 vkh_public
 bool vkh_phyinfo_create_presentable_queues	(VkhPhyInfo phy, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo);
 vkh_public
-bool phy_info_create_graphic_queues		(VkhPhyInfo phy, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo);
+bool vkh_phy_info_create_graphic_queues		(VkhPhyInfo phy, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo);
 vkh_public
 bool vkh_phyinfo_create_transfer_queues		(VkhPhyInfo phy, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo);
 vkh_public
