@@ -31,23 +31,23 @@ extern "C" {
 #include "deps/tinycthread.h"
 
 typedef struct _vkh_image_t {
-	VkhDevice				pDev;
-	VkImageCreateInfo		infos;
-	VkImage					image;
+    VkhDevice         pDev;
+    VkImageCreateInfo infos;
+    VkImage           image;
 #ifdef VKH_USE_VMA
-	VmaAllocation			alloc;
-	VmaAllocationInfo		allocInfo;
+    VmaAllocation     alloc;
+    VmaAllocationInfo allocInfo;
 #else
-	VkDeviceMemory			memory;
+    VkDeviceMemory memory;
 #endif
-	VkSampler				sampler;
-	VkImageView				view;
-	VkImageLayout			layout; //current layout
-	bool					imported;//dont destroy vkimage at end
+    VkSampler     sampler;
+    VkImageView   view;
+    VkImageLayout layout;   // current layout
+    bool          imported; // dont destroy vkimage at end
 
-	uint32_t				references;
-	mtx_t					mutex;
-}vkh_image_t;
+    uint32_t references;
+    mtx_t    mutex;
+} vkh_image_t;
 
 #ifdef __cplusplus
 }

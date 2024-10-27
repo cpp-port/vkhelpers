@@ -33,23 +33,23 @@ extern "C" {
 #endif
 
 typedef struct _vkh_buffer_t {
-	VkhDevice				pDev;
-	VkBufferCreateInfo		infos;
-	VkBuffer				buffer;
+    VkhDevice          pDev;
+    VkBufferCreateInfo infos;
+    VkBuffer           buffer;
 #ifdef VKH_USE_VMA
-	VmaAllocation			alloc;
-	VmaAllocationInfo		allocInfo;
-	VmaAllocationCreateInfo allocCreateInfo;
+    VmaAllocation           alloc;
+    VmaAllocationInfo       allocInfo;
+    VmaAllocationCreateInfo allocCreateInfo;
 #else
-	VkDeviceMemory			memory;
-	VkDeviceSize			size;
-	VkBufferUsageFlags		usageFlags;
-	VkhMemoryUsage			memprops;
+    VkDeviceMemory     memory;
+    VkDeviceSize       size;
+    VkBufferUsageFlags usageFlags;
+    VkhMemoryUsage     memprops;
 #endif
-	VkDescriptorBufferInfo	descriptor;
-	VkDeviceSize			alignment;
-	void*					mapped;
-}vkh_buffer_t;
+    VkDescriptorBufferInfo descriptor;
+    VkDeviceSize           alignment;
+    void                  *mapped;
+} vkh_buffer_t;
 #ifdef __cplusplus
 }
 #endif

@@ -32,16 +32,16 @@ extern "C" {
 #include "vk_mem_alloc.h"
 #endif
 
-typedef struct _vkh_device_t{
-	VkDevice				dev;
-	VkPhysicalDeviceMemoryProperties phyMemProps;
-	VkPhysicalDevice		phy;
-	VkInstance				instance;
+typedef struct _vkh_device_t {
+    VkDevice                         dev;
+    VkPhysicalDeviceMemoryProperties phyMemProps;
+    VkPhysicalDevice                 phy;
+    VkInstance                       instance;
 #ifdef VKH_USE_VMA
-	VmaAllocator			allocator;
+    VmaAllocator allocator;
 #endif
-	VkhApp					vkhApplication;
-}vkh_device_t;
+    VkhApp vkhApplication;
+} vkh_device_t;
 
 #ifdef __cplusplus
 }
