@@ -31,6 +31,7 @@ extern "C" {
 #include "deps/tinycthread.h"
 
 typedef struct _vkh_image_t {
+    VkResult          status;
     VkhDevice         pDev;
     VkImageCreateInfo infos;
     VkImage           image;

@@ -50,6 +50,7 @@ typedef struct _vkh_app_t {
     VkApplicationInfo        infos;
     VkInstance               inst;
     VkDebugUtilsMessengerEXT debugMessenger;
+    VkResult                 status;
 } vkh_app_t;
 #ifdef __cplusplus
 }

@@ -54,7 +54,7 @@ VkhImage _vkh_image_create(VkhDevice pDev, VkImageType imageType, VkFormat forma
     img->view	= VK_NULL_HANDLE;*/
 #ifdef VKH_USE_VMA
     VmaAllocationCreateInfo allocInfo = {.usage = (VmaMemoryUsage)memprops};
-    VK_CHECK_RESULT(vmaCreateImage(pDev->allocator, pInfo, &allocInfo, &img->image, &img->alloc, &img->allocInfo));
+    VKH_CHECK_RESULT(img->status, vmaCreateImage(pDev->allocator, pInfo, &allocInfo, &img->image, &img->alloc, &img->allocInfo));
 #else
     VK_CHECK_RESULT(vkCreateImage(pDev->dev, pInfo, NULL, &img->image));
     VkMemoryRequirements memReq;
@@ -108,6 +108,8 @@ void vkh_image_reference(VkhImage img) {
     img->references++;
     mtx_unlock(&img->mutex);
 }
+VkResult vkh_image_status(VkhImage img) { return img==NULL ? VK_ERROR_UNKNOWN : img->status; }
+
 VkhImage vkh_tex2d_array_create(VkhDevice pDev, VkFormat format, uint32_t width, uint32_t height, uint32_t layers,
                                 VkhMemoryUsage memprops, VkImageUsageFlags usage) {
     return _vkh_image_create(pDev, VK_IMAGE_TYPE_2D, format, width, height, memprops, usage, VK_SAMPLE_COUNT_1_BIT,

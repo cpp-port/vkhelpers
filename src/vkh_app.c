@@ -20,11 +20,12 @@
  * THE SOFTWARE.
  */
 #include "vkh_app.h"
-// #include "vk_mem_alloc.h"
 
 #define ENGINE_NAME    "vkhelpers"
 #define ENGINE_VERSION 1
+uint32_t vkh_log_level = VKH_LOG_DEBUG;
 
+//default debug messenger callback enabled with 'vkh_app_enable_debug_messenger'
 VkBool32 debugUtilsMessengerCallback(VkDebugUtilsMessageSeverityFlagBitsEXT      messageSeverity,
                                      VkDebugUtilsMessageTypeFlagsEXT             messageTypes,
                                      const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData, void *pUserData) {
@@ -62,7 +63,15 @@ VkBool32 debugUtilsMessengerCallback(VkDebugUtilsMessageSeverityFlagBitsEXT     
 
 VkhApp vkh_app_create(uint32_t version_major, uint32_t version_minor, const char *app_name, uint32_t enabledLayersCount,
                       const char **enabledLayers, uint32_t ext_count, const char *extentions[]) {
+    uint32_t apiVersion;
+    vkEnumerateInstanceVersion(&apiVersion);
+    LOG(VKH_LOG_INFO, "VkhApp create: instance api version = %d.%d", VK_API_VERSION_MAJOR(apiVersion), VK_API_VERSION_MINOR(apiVersion));
+
     VkhApp app = (VkhApp)malloc(sizeof(vkh_app_t));
+    if (!app) {
+        LOG(VKH_LOG_ERR, "VkhApp creation failed, out of memory.");
+        return NULL;
+    }
 
     VkApplicationInfo infos = {.sType              = VK_STRUCTURE_TYPE_APPLICATION_INFO,
                                .pApplicationName   = app_name,
@@ -82,7 +91,7 @@ VkhApp vkh_app_create(uint32_t version_major, uint32_t version_minor, const char
                                       .enabledLayerCount       = enabledLayersCount,
                                       .ppEnabledLayerNames     = enabledLayers};
 
-    VK_CHECK_RESULT(vkCreateInstance(&inst_info, NULL, &app->inst));
+    VKH_CHECK_RESULT(app->status, vkCreateInstance(&inst_info, NULL, &app->inst));
     app->infos          = infos;
     app->debugMessenger = VK_NULL_HANDLE;
     return app;
@@ -92,14 +101,14 @@ void vkh_app_destroy(VkhApp app) {
     if (app->debugMessenger != VK_NULL_HANDLE) {
         PFN_vkDestroyDebugUtilsMessengerEXT DestroyDebugUtilsMessenger =
             (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(app->inst, "vkDestroyDebugUtilsMessengerEXT");
-
         DestroyDebugUtilsMessenger(app->inst, app->debugMessenger, VK_NULL_HANDLE);
     }
     vkDestroyInstance(app->inst, NULL);
     free(app);
 }
+VkResult vkh_app_status(VkhApp app) { return app==NULL ? VK_ERROR_UNKNOWN : app->status; }
 
-VkInstance vkh_app_get_inst(VkhApp app) { return app->inst; }
+VkInstance vkh_app_get_inst(VkhApp app) { return vkh_app_status(app) ? VK_NULL_HANDLE : app->inst; }
 
 VkhPhyInfo *vkh_app_get_phyinfos(VkhApp app, uint32_t *count, VkSurfaceKHR surface) {
     VK_CHECK_RESULT(vkEnumeratePhysicalDevices(app->inst, count, NULL));
@@ -119,13 +128,7 @@ void vkh_app_free_phyinfos(uint32_t count, VkhPhyInfo *infos) {
         vkh_phyinfo_destroy(infos[i]);
     free(infos);
 }
-/**
- * @brief Add a Debug utils messenger to this  VkhApp. It will be destroyed on VkhApp end.
- * @param VKH application pointer containing vkInstance.
- * @param Message type flags
- * @param Message severity flags.
- * @param optional message callback, if null a default one which print to stdout is configured.
- */
+
 void vkh_app_enable_debug_messenger(VkhApp app, VkDebugUtilsMessageTypeFlagsEXT typeFlags,
                                     VkDebugUtilsMessageSeverityFlagsEXT  severityFlags,
                                     PFN_vkDebugUtilsMessengerCallbackEXT callback) {
