@@ -266,7 +266,7 @@ void vkh_image_destroy_sampler(VkhImage img) {
 }
 
 void *vkh_image_map(VkhImage img) {
-    void *data;
+    void *data = NULL;
 #ifdef VKH_USE_VMA
     vmaMapMemory(img->pDev->allocator, img->alloc, &data);
 #else
